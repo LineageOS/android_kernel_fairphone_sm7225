@@ -78,4 +78,5 @@ obj-$(CONFIG_QTI_XR_SMRTVWR_MISC) += qxr-stdalonevwr.o
 obj-$(CONFIG_FPR_FPC)		+= fpr_FingerprintCard/
 obj-y                           += qrc/
 obj-$(CONFIG_KINECTICS_XR_NORDIC) += kxrctrl/
+obj-$(CONFIG_CHIPONE_FINGERPRINT)		+= fpsensor_chipone/
 obj-$(CONFIG_AW8695_HAPTIC)	+= aw8695/
