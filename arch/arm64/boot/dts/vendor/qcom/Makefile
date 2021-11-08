@@ -118,7 +118,9 @@ dtbo-$(CONFIG_ARCH_LAGOON) += \
 		lagoon-mtp-usbc-overlay.dtbo \
 		lagoon-cdp-overlay.dtbo \
 		lagoon-atp-overlay.dtbo \
-		lagoon-qrd-overlay.dtbo
+		lagoon-qrd-overlay.dtbo \
+		lagoon-mtp-overlay_n10.dtbo \
+		lagoon-mtp-overlay_fp4.dtbo
 
 lagoon-rumi-overlay.dtbo-base := lagoon.dtb
 lagoon-mtp-overlay.dtbo-base := lagoon.dtb
@@ -126,6 +128,8 @@ lagoon-mtp-usbc-overlay.dtbo-base := lagoon.dtb
 lagoon-cdp-overlay.dtbo-base := lagoon.dtb
 lagoon-atp-overlay.dtbo-base := lagoon.dtb
 lagoon-qrd-overlay.dtbo-base := lagoon.dtb
+lagoon-mtp-overlay_n10.dtbo-base := lagoon.dtb
+lagoon-mtp-overlay_fp4.dtbo-base := lagoon.dtb
 else
 dtb-$(CONFIG_ARCH_LAGOON) += \
 		lagoon-rumi.dtb \
