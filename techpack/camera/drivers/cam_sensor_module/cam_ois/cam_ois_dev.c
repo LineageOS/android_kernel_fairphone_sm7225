@@ -673,6 +673,7 @@ static ssize_t c_ois_read(struct file *filp,char *buf,size_t len,loff_t *off)
 		return -ERESTARTSYS;
 	pois_dev->need_read = 0;
 
+	mdelay(1);
 	rc = load_ois_data(pois_dev);
 	if (rc) {
 		goto error_handle;
