@@ -64,6 +64,14 @@ dtb-$(CONFIG_ARCH_KONA) += kona-rumi.dtb \
         kona-v2.1-iot-rb5.dtb
 endif
 
+ifeq ($(CONFIG_MACH_FAIRPHONE_FP4),y)
+dtbo-$(CONFIG_ARCH_LAGOON) += \
+	lagoon-mtp-overlay_n10.dtbo \
+	lagoon-mtp-overlay_fp4.dtbo
+
+lagoon-mtp-overlay_n10.dtbo-base := lagoon.dtb
+lagoon-mtp-overlay_fp4.dtbo-base := lagoon.dtb
+else
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 dtbo-$(CONFIG_ARCH_LITO) += lito-rumi-overlay.dtbo \
                 lito-mtp-overlay.dtbo \
@@ -118,9 +126,7 @@ dtbo-$(CONFIG_ARCH_LAGOON) += \
 		lagoon-mtp-usbc-overlay.dtbo \
 		lagoon-cdp-overlay.dtbo \
 		lagoon-atp-overlay.dtbo \
-		lagoon-qrd-overlay.dtbo \
-		lagoon-mtp-overlay_n10.dtbo \
-		lagoon-mtp-overlay_fp4.dtbo
+		lagoon-qrd-overlay.dtbo
 
 lagoon-rumi-overlay.dtbo-base := lagoon.dtb
 lagoon-mtp-overlay.dtbo-base := lagoon.dtb
@@ -128,8 +134,6 @@ lagoon-mtp-usbc-overlay.dtbo-base := lagoon.dtb
 lagoon-cdp-overlay.dtbo-base := lagoon.dtb
 lagoon-atp-overlay.dtbo-base := lagoon.dtb
 lagoon-qrd-overlay.dtbo-base := lagoon.dtb
-lagoon-mtp-overlay_n10.dtbo-base := lagoon.dtb
-lagoon-mtp-overlay_fp4.dtbo-base := lagoon.dtb
 else
 dtb-$(CONFIG_ARCH_LAGOON) += \
 		lagoon-rumi.dtb \
@@ -139,6 +143,7 @@ dtb-$(CONFIG_ARCH_LAGOON) += \
 		lagoon-atp.dtb \
 		lagoon-qrd.dtb
 endif
+endif # CONFIG_MACH_FAIRPHONE_FP4
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
         dtbo-$(CONFIG_ARCH_BENGAL) += \
