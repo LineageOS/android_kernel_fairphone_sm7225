@@ -1328,6 +1328,9 @@ static int cam_vfe_bus_start_wm(
 	cam_io_w_mb(rsrc_data->en_cfg, common_data->mem_base +
 		rsrc_data->hw_regs->cfg);
 
+    /* Enable WM for BUS err */
+    cam_io_w_mb(rsrc_data->en_cfg, common_data->mem_base + rsrc_data->hw_regs->cfg);
+
 	CAM_DBG(CAM_ISP, "WM res %d width = %d, height = %d", rsrc_data->index,
 		rsrc_data->width, rsrc_data->height);
 	CAM_DBG(CAM_ISP, "WM res %d pk_fmt = %d", rsrc_data->index,
