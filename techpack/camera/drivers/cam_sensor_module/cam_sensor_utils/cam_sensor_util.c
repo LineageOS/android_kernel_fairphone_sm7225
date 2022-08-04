@@ -1864,6 +1864,11 @@ int cam_sensor_core_power_up(struct cam_sensor_power_ctrl_t *ctrl,
 	if (soc_info->use_shared_clk)
 		cam_res_mgr_shared_clk_config(true);
 
+	if (!strcmp(soc_info->dev_name,"ac4a000.qcom,cci0:qcom,ois@0")) {
+		CAM_DBG(CAM_SENSOR, "OIS no need power up again!");
+		return 0;
+	}
+	
 	ret = msm_camera_pinctrl_init(&(ctrl->pinctrl_info), ctrl->dev);
 	if (ret < 0) {
 		/* Some sensor subdev no pinctrl. */
