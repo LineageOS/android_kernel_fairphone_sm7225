@@ -26,12 +26,13 @@
 #include "iris/dsi_iris6_lp.h"
 #include "iris/dsi_iris6_lightup.h"
 #include <video/mipi_display.h>
-extern u8 panel_mcf_data[512];
 #endif
 
 #ifdef CONFIG_TOUCHSCREEN_FTS
 extern int fts_esd_check(void);
 #endif
+
+extern u8 panel_mcf_data[512];
 
 #define to_dsi_display(x) container_of(x, struct dsi_display, host)
 #define INT_BASE_10 10
