@@ -1,7 +1,6 @@
 #include "lagoon-mtp.dtsi"
 #include "dsi-panel-ft8716u-1080p-video.dtsi"
 #include "dsi-panel-hx83112a-auo-1080p-video.dtsi"
-#include "pxlw/pxlw-iris6.dtsi"
 
 &mtp_batterydata {
     #include "qg-batterydata-fp4-veken-4360mah.dtsi"
