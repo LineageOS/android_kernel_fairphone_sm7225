@@ -979,6 +979,10 @@ static int handle_jeita(struct step_chg_info *chip)
 	int rc = 0, fcc_ua = 0, fv_uv = 0;
 	u64 elapsed_ms = 0;
 
+	/* Handle jeita-fcc-scaling if enabled */
+	if (chip->jeita_fcc_scaling)
+		handle_jeita_fcc_scaling(chip);
+
 	if (!chip->sw_jeita_enable || !chip->sw_jeita_cfg_valid) {
 		pr_debug("sw_jeita disabled or invalid, %d, %d\n",
 				chip->sw_jeita_enable, chip->sw_jeita_cfg_valid);
