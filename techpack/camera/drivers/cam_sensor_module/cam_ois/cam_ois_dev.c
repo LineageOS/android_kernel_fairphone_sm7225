@@ -335,12 +335,12 @@ static int32_t load_ois_data(struct cam_ois_dev *pois_dev)
 		return -EINVAL;
 	}
 	mutex_lock(&(o_ctrl->ois_mutex));
-	camera_io_dev_write_continuous(&o_ctrl->io_master_info, &pois_dev->i2c_reg_setting, 0);
+	camera_io_dev_write_continuous(&o_ctrl->io_master_info, &pois_dev->i2c_reg_setting, 0, false);
 	mdelay(1); /* for safe read data */
 	get_monotonic_boottime64(&ts);
 	pois_dev->load_ois_timestamp = time_stamp_val_for_cm401;
 	camera_io_dev_read_seq(&(o_ctrl->io_master_info),0x9DAC, pois_dev->reg_data_buffer,CAMERA_SENSOR_I2C_TYPE_WORD,CAMERA_SENSOR_I2C_TYPE_WORD,80);
-	camera_io_dev_write(&o_ctrl->io_master_info,&pois_dev->i2c_reg_setting_for_buffer0);
+	camera_io_dev_write(&o_ctrl->io_master_info,&pois_dev->i2c_reg_setting_for_buffer0, false);
 	mdelay(1); /* for safe read data */
 	camera_io_dev_read_seq(&(o_ctrl->io_master_info),0x9DAC, &pois_dev->reg_data_buffer[80],CAMERA_SENSOR_I2C_TYPE_WORD,CAMERA_SENSOR_I2C_TYPE_WORD,80);
 	reverse_byte(pois_dev);
