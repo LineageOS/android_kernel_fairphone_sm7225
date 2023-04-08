@@ -257,7 +257,6 @@
 };
 
 &lagoon_snd {
-	qcom,model = "lito-lagoon-fp4-snd-card";
 	qcom,msm-mi2s-master = <1>, <1>, <1>, <1>, <1>, <1>;
 	qcom,wcn-btfm = <1>;
 	qcom,ext-disp-audio-rx = <1>;
