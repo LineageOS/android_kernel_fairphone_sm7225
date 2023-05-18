@@ -4128,7 +4128,7 @@ static int aw8695_vibrator_init(struct aw8695 *aw8695)
         return ret;
     }
 #else
-    aw8695->cdev.name = "vibrator_aw8695";
+    aw8695->cdev.name = "vibrator";
     aw8695->cdev.brightness_get = aw8695_haptic_brightness_get;
     aw8695->cdev.brightness_set = aw8695_haptic_brightness_set;
 
