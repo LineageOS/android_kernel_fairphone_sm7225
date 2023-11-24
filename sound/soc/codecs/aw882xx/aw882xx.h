@@ -32,6 +32,7 @@
 
 #define AW882XX_CFG_NAME_MAX			(64)
 #define AW_FADE_OUT_TARGET_VOL			(90 * 2)
+#define AW_EARPIECE_MAX_GAIN			(40)
 #define AW882XX_VOLUME_STEP_DB			(6 * 2)
 
 

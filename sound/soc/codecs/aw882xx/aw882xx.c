@@ -349,18 +349,24 @@ static int aw882xx_fade_in_out(struct aw882xx *aw882xx, bool fade_in)
 {
 	int i = 0;
 	uint32_t start_volume = 0;
+	int target_offset = 0;
 
 	/*volume up*/
 	if (fade_in) {
-		for (i = AW_FADE_OUT_TARGET_VOL; i >= (int32_t)aw882xx->db_offset;
+		if (aw882xx->cfg_num != AW882XX_RECEIVER_MODE) {
+			target_offset = aw882xx->db_offset;
+		} else {
+			target_offset = AW_EARPIECE_MAX_GAIN;
+		}
+		for (i = AW_FADE_OUT_TARGET_VOL; i >= (int32_t)target_offset;
 						i -= aw882xx->fade_step) {
 			if (i < (int32_t)aw882xx->fade_step)
-				i = aw882xx->db_offset;
+				i = target_offset;
 			aw882xx_set_volume(aw882xx, i);
 			usleep_range(1400, 1600);
 		}
-		if (i != (int32_t)aw882xx->db_offset)
-			aw882xx_set_volume(aw882xx, aw882xx->db_offset);
+		if (i != (int32_t)target_offset)
+			aw882xx_set_volume(aw882xx, target_offset);
 	} else {
 		/*volume down*/
 		aw882xx_get_volume(aw882xx, &start_volume);
