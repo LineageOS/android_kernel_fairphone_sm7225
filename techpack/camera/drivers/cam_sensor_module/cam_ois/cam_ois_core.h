@@ -38,6 +38,8 @@ ssize_t ois_status_show(struct device *dev, struct device_attribute *attr, char 
 ssize_t ois_status_store(struct device *dev,  struct device_attribute *attr, const char *buf, size_t count);
 ssize_t ois_reg_show(struct device *dev, struct device_attribute *attr, char *buf);
 ssize_t ois_reg_store(struct device *dev,  struct device_attribute *attr, const char *buf, size_t count);
+ssize_t ois_gain_get_show(struct device *dev, struct device_attribute *attr, char *buf);
+ssize_t ois_gain_get_store(struct device *dev,  struct device_attribute *attr, const char *buf, size_t count);
 ssize_t ois_init_before_sr_test_show(struct device *dev, struct device_attribute *attr, char *buf);
 ssize_t ois_init_before_sr_test_store(struct device *dev,  struct device_attribute *attr, const char *buf, size_t count);
 ssize_t ois_gain_set_store(struct device *dev,  struct device_attribute *attr, const char *buf, size_t count);

@@ -38,7 +38,7 @@ static int32_t gyro_offset_Y = 0;
 static int32_t gyro_offset_X_check = -1;
 static int32_t gyro_offset_Y_check = -1;
 static int32_t ois_reg_value = -1;
-
+static int32_t ois_gain_get_value = -1;
 
 static int calibration_status = 0;
 static int ois_status = 0;
@@ -1426,6 +1426,52 @@ static int cam_cml_ois_fw_upgrade(struct cam_ois_ctrl_t *o_ctrl)
     return rc;
 }
 
+ssize_t ois_gain_get_show(struct device *dev, struct device_attribute *attr, char *buf){
+
+	return sprintf(buf, "0x%x\n", ois_gain_get_value);
+
+}
+
+ssize_t ois_gain_get_store(struct device *dev,  struct device_attribute *attr, const char *buf, size_t count){
+
+	struct cam_ois_ctrl_t *o_ctrl = NULL;
+	char cmd_buf[32];
+	uint32_t cmd_adress=0,cmd_data=0,read_data=0;
+	char flag;
+	int rc = 0;
+
+	struct platform_device *pdev = container_of(dev, struct platform_device, dev);
+	memset(cmd_buf,0,32);
+	o_ctrl = platform_get_drvdata(pdev);
+
+	if (!o_ctrl) {
+		CAM_ERR(CAM_OIS, "Invalid Args");
+		return count;
+	}
+
+	//cpy user cmd to kernel 0x:0x:r/w
+	strcpy(cmd_buf,buf);
+	sscanf(cmd_buf,"%x:%x:%c",&cmd_adress,&cmd_data,&flag);
+
+	if (flag == 'r' && cmd_data == 0x0)
+	{
+		mdelay(50);
+		rc = camera_io_dev_read(&(o_ctrl->io_master_info),cmd_adress,&read_data,CAMERA_SENSOR_I2C_TYPE_WORD,CAMERA_SENSOR_I2C_TYPE_WORD);
+		if (rc < 0)
+		{
+			CAM_ERR(CAM_OIS, "read %x  failed: %d",cmd_adress,rc);
+		}
+		else
+		{
+			CAM_DBG(CAM_OIS,"read %x -> 0x%x",cmd_adress,read_data);
+			ois_gain_get_value = read_data;
+		}
+		mdelay(50);
+	}
+
+	return count;
+}
+
 
 ssize_t ois_reg_show(struct device *dev, struct device_attribute *attr, char *buf){
 	
@@ -1568,6 +1614,9 @@ ssize_t ois_reg_store(struct device *dev,  struct device_attribute *attr, const 
 			}
 		}
 	}
+
+	cma_release(dev_get_cma_area((o_ctrl->soc_info.dev)),	page, fw_size);
+	page = NULL;
 
 	return count;
 }
