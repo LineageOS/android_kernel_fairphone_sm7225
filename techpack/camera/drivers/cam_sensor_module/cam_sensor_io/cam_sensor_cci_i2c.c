@@ -53,12 +53,12 @@ int32_t cam_cci_i2c_read(struct cam_sensor_cci_client *cci_client,
 
 union sf
 {
-	float f;
+	int f;
 	unsigned char s[4];
 }cam_gyro_gain;
 
-float gyro_gain_X = 0.0;
-float gyro_gain_Y = 0.0;
+int gyro_gain_test[2] = {0};
+
 
 int32_t cam_camera_cci_i2c_read_seq(struct cam_sensor_cci_client *cci_client,
 	uint32_t addr, uint8_t *data,
@@ -106,13 +106,13 @@ int32_t cam_camera_cci_i2c_read_seq(struct cam_sensor_cci_client *cci_client,
 			d[i] = data[6980+i];
 		snprintf(cam_gyro_gain.s, sizeof(cam_gyro_gain.s), "%c%c%c%c",
 				d[0],d[1],d[2],d[3]);
-		gyro_gain_X = cam_gyro_gain.f;//X gain
+		gyro_gain_test[0] = cam_gyro_gain.f;
 
 		for (i = 0; i < 4; i++)
 			d[i] = data[6984+i];
 		snprintf(cam_gyro_gain.s, sizeof(cam_gyro_gain.s), "%c%c%c%c",
 				d[0],d[1],d[2],d[3]);
-		gyro_gain_Y = cam_gyro_gain.f;//Y gain
+		gyro_gain_test[1] = cam_gyro_gain.f;
 	}
 
 	

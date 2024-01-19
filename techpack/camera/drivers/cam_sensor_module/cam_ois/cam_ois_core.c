@@ -43,11 +43,10 @@ static int32_t ois_gain_get_value = -1;
 static int calibration_status = 0;
 static int ois_status = 0;
 static int ois_init_status = 0;
-
-extern float gyro_gain_X;
-extern float gyro_gain_Y;
+extern int gyro_gain_test[2];
 static int32_t decrease_gain_X = 0;
 static int32_t decrease_gain_Y = 0;
+static int32_t gyro_gain_init[2] = {0};
 
 int32_t cam_ois_construct_default_power_setting(
 	struct cam_sensor_power_ctrl_t *power_info)
@@ -334,8 +333,10 @@ static int cam_ois_gyro_calibration(struct cam_ois_ctrl_t *o_ctrl)
   	uint32_t                           fw_size;
 	uint32_t cmd_adress=0,cmd_data=0;
 	uint32_t c=0,d=0;
-	float target_gain_X = 0.0;
-	float target_gain_Y = 0.0;
+
+	int bit31=0,bit22=0,bit21=0,bit20=0,bit19=0,bit18=0,bit17=0,bit16=0,
+		bit15=0,bit14=0,bit13=0,bit12=0;
+	int x=0,e=0,i=0;
 
 	const REGSETTING cml_ois_gyro_calibration[]= {
 		//gyro cali mode
@@ -406,12 +407,46 @@ static int cam_ois_gyro_calibration(struct cam_ois_ctrl_t *o_ctrl)
 	CAM_ERR(CAM_OIS, "write 0x0024 -> 0x0001");
 
 	mdelay(50);
+	if (gyro_gain_test[0] != 0 && gyro_gain_test[1] != 0)
+	{
+			gyro_gain_init[0] = gyro_gain_test[0];
+			gyro_gain_init[1] = gyro_gain_test[1];
+	}
+
+	for(i=0;i<2;i++)
+	{
+			bit31 = (gyro_gain_init[i] & 0x80000000) >> 31;
+			bit22 = (gyro_gain_init[i] & 0x00400000) >> 22;
+			bit21 = (gyro_gain_init[i] & 0x00200000) >> 21;
+			bit20 = (gyro_gain_init[i] & 0x00100000) >> 20;
+			bit19 = (gyro_gain_init[i] & 0x00080000) >> 19;
+			bit18 = (gyro_gain_init[i] & 0x00040000) >> 18;
+			bit17 = (gyro_gain_init[i] & 0x00020000) >> 17;
+			bit16 = (gyro_gain_init[i] & 0x00010000) >> 16;
+			bit15 = (gyro_gain_init[i] & 0x00008000) >> 15;
+			bit14 = (gyro_gain_init[i] & 0x00004000) >> 14;
+			bit13 = (gyro_gain_init[i] & 0x00002000) >> 13;
+			bit12 = (gyro_gain_init[i] & 0x00001000) >> 12;
+
+			x = (int)(bit22*4096+bit21*2048+bit20*1024+bit19*512+bit18*256+bit17*128+bit16*64+bit15*32+bit14*16+bit13*8+bit12*4);
+			e = (gyro_gain_init[i] & 0x7f800000) >> 23;
+			if (e < 127)
+				gyro_gain_init[i] = (8192+x)/(1 << (127-e));
+			else
+				gyro_gain_init[i] = (8192+x)*(1 << (e-127));
+
+			if (bit31 == 1)
+				gyro_gain_init[i] = (-1)*gyro_gain_init[i];
+
+			CAM_ERR(CAM_OIS, "x 0x%x,e 0x%x",x,e);
+			CAM_ERR(CAM_OIS, "gyro_gain_init[%d] 0x%x",i,gyro_gain_init[i]);
+
+	}
+
 	if (decrease_gain_X == 0 && decrease_gain_Y == 0)
 	{
-		target_gain_X = gyro_gain_X - default_gain_X;
-		target_gain_Y = gyro_gain_Y - default_gain_Y;
-		c = (int) (target_gain_X*8192);
-		d = (int) (target_gain_Y*8192);
+		c= (int)((gyro_gain_init[0]*1000 - default_gain_X*8192)/1000);
+		d= (int)((gyro_gain_init[1]*1000 - default_gain_Y*8192)/1000);
 
 		if (c<=11264 && c>=5939 && d<=11060 && d>=6144)//0.725-1.375,0.75-1.35
 		{
@@ -435,10 +470,9 @@ static int cam_ois_gyro_calibration(struct cam_ois_ctrl_t *o_ctrl)
 	}
 	else
 	{
-		target_gain_X = gyro_gain_X - (float) decrease_gain_X/1000;
-		target_gain_Y = gyro_gain_Y - (float) decrease_gain_Y/1000;
-		c = (int) (target_gain_X*8192);
-		d = (int) (target_gain_Y*8192);
+		c= (int)((gyro_gain_init[0]*1000 - decrease_gain_X*8192)/1000);
+		d= (int)((gyro_gain_init[1]*1000 - decrease_gain_Y*8192)/1000);
+		CAM_ERR(CAM_OIS, "c 0x%x,d 0x%x",c,d);
 		
 		if (c<=11264 && c>=5939 && d<=11060 && d>=6144)//0.725-1.375,0.75-1.35
 		{
