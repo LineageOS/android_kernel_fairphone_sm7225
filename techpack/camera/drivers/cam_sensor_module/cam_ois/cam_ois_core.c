@@ -15,8 +15,8 @@
 #include "cam_common_util.h"
 #include "cam_packet_util.h"
 
-#define      default_gain_X 0.075
-#define      default_gain_Y 0.05
+#define      default_gain_X 75/1000
+#define      default_gain_Y 50/1000
 #define      FW_VERSION_MAJOR 0x0001
 #define      FW_VERSION_MINOR 0x002B
 #define OIS_FW_FILE "/vendor/etc/camera/cm401_fw.txt"
