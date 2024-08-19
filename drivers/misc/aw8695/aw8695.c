@@ -2496,63 +2496,63 @@ static int aw8695_haptic_init(struct aw8695 *aw8695)
     pr_info("%s pre_f0 = %d \n", __func__,aw8695->info.f0_pre);;
     pr_info("%s aw8695_f0_cal = %d \n", __func__,aw8695_f0_cal);
 
-    f0_pre_low = aw8695->info.f0_pre*0.93;
-    f0_pre_high = aw8695->info.f0_pre * 1.07;
-       if(aw8695_f0_cal > (aw8695->info.f0_pre * 1.07) || aw8695_f0_cal < (aw8695->info.f0_pre*0.93)){ //dtsi 里定义的校准偏差值 7%
-         mutex_lock(&aw8695->lock);
-         aw8695_haptic_f0_calibration(aw8695); //调用 1 次振动对 f0 值完成重新检测及校准
-         mutex_unlock(&aw8695->lock);
+    f0_pre_low = aw8695->info.f0_pre * (93/100);
+    f0_pre_high = aw8695->info.f0_pre * (107/100);
+    if (aw8695_f0_cal > (aw8695->info.f0_pre * (107/100)) ||
+        aw8695_f0_cal < (aw8695->info.f0_pre * (93/100))) { //dtsi 里定义的校准偏差值 7%
+        mutex_lock(&aw8695->lock);
+        aw8695_haptic_f0_calibration(aw8695); //调用 1 次振动对 f0 值完成重新检测及校准
+        mutex_unlock(&aw8695->lock);
         pr_info("%s new f0 = %d \n", __func__,aw8695->f0);
-     }
-     else{ //对 UEFI 传入的 f0 检测值校准
+    } else { //对 UEFI 传入的 f0 检测值校准
         unsigned int f0_limit = 0;
         char f0_cali_lra = 0;
         int f0_cali_step = 0;
 
-         aw8695_i2c_write(aw8695, AW8695_REG_TRIM_LRA, 0x00);
+        aw8695_i2c_write(aw8695, AW8695_REG_TRIM_LRA, 0x00);
 
-         /* max and min limit */
-         aw8695->f0 = aw8695_f0_cal;
-         f0_limit = aw8695->f0;
-         if (aw8695->f0 * 100 <
-             aw8695->info.f0_pre * (100 - aw8695->info.f0_cali_percen)) {
-             f0_limit = aw8695->info.f0_pre;
-         }
-         if (aw8695->f0 * 100 >
-             aw8695->info.f0_pre * (100 + aw8695->info.f0_cali_percen)) {
-             f0_limit = aw8695->info.f0_pre;
-         }
-         /* calculate cali step */
-         f0_cali_step = 100000 * ((int)f0_limit -
-             (int)aw8695->info.f0_pre) / ((int)f0_limit * 25);
+        /* max and min limit */
+        aw8695->f0 = aw8695_f0_cal;
+        f0_limit = aw8695->f0;
+        if (aw8695->f0 * 100 <
+            aw8695->info.f0_pre * (100 - aw8695->info.f0_cali_percen)) {
+            f0_limit = aw8695->info.f0_pre;
+        }
+        if (aw8695->f0 * 100 >
+            aw8695->info.f0_pre * (100 + aw8695->info.f0_cali_percen)) {
+            f0_limit = aw8695->info.f0_pre;
+        }
+        /* calculate cali step */
+        f0_cali_step = 100000 * ((int)f0_limit -
+            (int)aw8695->info.f0_pre) / ((int)f0_limit * 25);
 
-         pr_info("%s line=%d f0_cali_step=%d\n", __func__, __LINE__, f0_cali_step);
-         pr_info("%s line=%d f0_limit=%d\n", __func__, __LINE__, (int)f0_limit);
+        pr_info("%s line=%d f0_cali_step=%d\n", __func__, __LINE__, f0_cali_step);
+        pr_info("%s line=%d f0_limit=%d\n", __func__, __LINE__, (int)f0_limit);
 
-         if (f0_cali_step >= 0) { /*f0_cali_step >= 0 */
-             if (f0_cali_step % 10 >= 5) {
-                 f0_cali_step = f0_cali_step / 10 + 1 + 32;
-             } else {
-                 f0_cali_step = f0_cali_step / 10 + 32;
-             }
-         } else { /*f0_cali_step < 0 */
-             if (f0_cali_step % 10 <= -5) {
-                 f0_cali_step = 32 + (f0_cali_step / 10 - 1);
-             } else {
-                 f0_cali_step = 32 + f0_cali_step / 10;
-             }
-         }
-         if (f0_cali_step > 31) {
-             f0_cali_lra = (char)f0_cali_step - 32;
-         } else {
-             f0_cali_lra = (char)f0_cali_step + 32;
-         }
-         pr_info("%s f0_cali_lra=%d\n", __func__, (int)f0_cali_lra);
-         /* update cali step */
-         aw8695_i2c_write(aw8695, AW8695_REG_TRIM_LRA, (char)f0_cali_lra);
-         aw8695_i2c_read(aw8695, AW8695_REG_TRIM_LRA, &reg_val);
-         pr_info("%s final trim_lra=0x%02x\n", __func__, reg_val);
-     }
+        if (f0_cali_step >= 0) { /*f0_cali_step >= 0 */
+            if (f0_cali_step % 10 >= 5) {
+                f0_cali_step = f0_cali_step / 10 + 1 + 32;
+            } else {
+                f0_cali_step = f0_cali_step / 10 + 32;
+            }
+        } else { /*f0_cali_step < 0 */
+            if (f0_cali_step % 10 <= -5) {
+                f0_cali_step = 32 + (f0_cali_step / 10 - 1);
+            } else {
+                f0_cali_step = 32 + f0_cali_step / 10;
+            }
+        }
+        if (f0_cali_step > 31) {
+            f0_cali_lra = (char)f0_cali_step - 32;
+        } else {
+            f0_cali_lra = (char)f0_cali_step + 32;
+        }
+        pr_info("%s f0_cali_lra=%d\n", __func__, (int)f0_cali_lra);
+        /* update cali step */
+        aw8695_i2c_write(aw8695, AW8695_REG_TRIM_LRA, (char)f0_cali_lra);
+        aw8695_i2c_read(aw8695, AW8695_REG_TRIM_LRA, &reg_val);
+        pr_info("%s final trim_lra=0x%02x\n", __func__, reg_val);
+    }
 #else
     mutex_lock(&aw8695->lock);
 
