@@ -53,11 +53,13 @@ LSM_HOOK(int, 0, bprm_set_creds, struct linux_binprm *bprm)
 LSM_HOOK(int, 0, bprm_check_security, struct linux_binprm *bprm)
 LSM_HOOK(void, LSM_RET_VOID, bprm_committing_creds, struct linux_binprm *bprm)
 LSM_HOOK(void, LSM_RET_VOID, bprm_committed_creds, struct linux_binprm *bprm)
+LSM_HOOK(int, 0, fs_context_parse_param, struct fs_context *fc, struct fs_parameter *param)
 LSM_HOOK(int, 0, sb_alloc_security, struct super_block *sb)
 LSM_HOOK(void, LSM_RET_VOID, sb_free_security, struct super_block *sb)
-LSM_HOOK(int, 0, sb_copy_data, char *orig, char *copy)
-LSM_HOOK(int, 0, sb_remount, struct super_block *sb, void *data)
-LSM_HOOK(int, 0, sb_kern_mount, struct super_block *sb, int flags, void *data)
+LSM_HOOK(void, LSM_RET_VOID, sb_free_mnt_opts, void *mnt_opts)
+LSM_HOOK(int, 0, sb_eat_lsm_opts, char *orig, void **mnt_opts)
+LSM_HOOK(int, 0, sb_remount, struct super_block *sb, void *mnt_opts)
+LSM_HOOK(int, 0, sb_kern_mount, struct super_block *sb)
 LSM_HOOK(int, 0, sb_show_options, struct seq_file *m, struct super_block *sb)
 LSM_HOOK(int, 0, sb_statfs, struct dentry *dentry)
 LSM_HOOK(int, 0, sb_mount, const char *dev_name, const struct path *path,
@@ -65,12 +67,12 @@ LSM_HOOK(int, 0, sb_mount, const char *dev_name, const struct path *path,
 LSM_HOOK(int, 0, sb_umount, struct vfsmount *mnt, int flags)
 LSM_HOOK(int, 0, sb_pivotroot, const struct path *old_path,
 	 const struct path *new_path)
-LSM_HOOK(int, 0, sb_set_mnt_opts, struct super_block *sb, struct security_mnt_opts *opts,
+LSM_HOOK(int, 0, sb_set_mnt_opts, struct super_block *sb, void *mnt_opts,
 	 unsigned long kern_flags, unsigned long *set_kern_flags)
 LSM_HOOK(int, 0, sb_clone_mnt_opts, const struct super_block *oldsb,
 	 struct super_block *newsb, unsigned long kern_flags,
 	 unsigned long *set_kern_flags)
-LSM_HOOK(int, 0, sb_parse_opts_str, char *options, struct security_mnt_opts *opts)
+LSM_HOOK(int, 0, sb_add_mnt_opt, const char *option, const char *val, int len, void **mnt_opts)
 LSM_HOOK(int, 0, dentry_init_security, struct dentry *dentry,
 	 int mode, const struct qstr *name, void **ctx, u32 *ctxlen)
 LSM_HOOK(int, 0, dentry_create_files_as, struct dentry *dentry, int mode,
