@@ -2,16 +2,10 @@
 # Kbuild for the vl53L1 drivers.
 #
 
-ccflags-y	+= -I$(src)/inc -I$(src)
+ccflags-y	+= -I$(srctree)/drivers/input/misc/vl53L1/inc
+ccflags-y	+= -I$(srctree)/drivers/input/misc/vl53L1/protected/inc
 
-
-ccflags-y	+= -I$(src)/protected/inc
 ccflags-y	+= -DVL53L1_FULL_KERNEL
-
-
-
-ccflags-y	+= -DVL53L3
-
 
 # define this environment variable if you want to compile driver for an old
 # kernel
